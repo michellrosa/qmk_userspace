@@ -1,9 +1,13 @@
 #include QMK_KEYBOARD_H
 
 #include "digitizer.h"
+#include "keycodes.h"
+#include "custom_mouse_keymap.h"
 
 // Shift on Hold, Enter on Tap
 #define SHENT SFT_T(KC_ENT)
+
+#define EXIT_MOUSE_MODE TG(2)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_60_ansi_split_bs_rshift_space(
@@ -20,6 +24,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, KC_DEL,  _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_UP,   TG(2),
         _______, _______, _______,          _______,                   _______,          KC_NO  , _______, KC_LEFT, KC_NO  , KC_DOWN, KC_RGHT
     ),
+#if 0
     [2] = LAYOUT_60_ansi_split_bs_rshift_space(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
@@ -27,6 +32,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, TG(2),
         _______, _______, _______,          _______,                   _______,          KC_NO  , _______, _______, KC_NO  , _______, _______
     ),
+#else
+    [2] = MOUSE_LAYER,
+#endif
 #if 0
     [x] = LAYOUT_60_ansi_split_bs_rshift_space(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -91,6 +99,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             default:
                 return true; // Process all other keycodes normally
         }
+#if 1
+        bool ismousekeypressed = getYposition(keycode, &y, 0);
+        if (!ismousekeypressed) {
+            return true; // Process all other keycodes normally
+        }
+#else
         switch (keycode) {
             case KC_Q:
             case KC_W:
@@ -129,6 +143,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             default:
                 return true; // Process all other keycodes normally
         }
+#endif
         if (record->event.pressed) { // Do something when pressed
             digitizer_in_range_on();
             digitizer_set_position(x, y);
