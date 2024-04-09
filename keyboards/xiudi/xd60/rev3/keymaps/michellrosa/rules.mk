@@ -3,3 +3,5 @@ DIGITIZER_ENABLE = yes
 
 MOUSEKEY_ENABLE = no
 BACKLIGHT_ENABLE = no
+
+SRC += mouse_manipulation.c
