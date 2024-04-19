@@ -5,3 +5,5 @@ MOUSEKEY_ENABLE = no
 BACKLIGHT_ENABLE = no
 
 SRC += mouse_manipulation.c
+
+CONSOLE_ENABLE = yes

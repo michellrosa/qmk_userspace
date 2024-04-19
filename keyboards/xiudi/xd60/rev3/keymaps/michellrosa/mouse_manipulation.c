@@ -2,6 +2,10 @@
 #include "digitizer.h"
 #include <stdint.h>
 
+#ifdef CONSOLE_ENABLE
+#include "print.h"
+#endif
+
 const int max_col_count = 10; // TODO depends on keymap.
 const int max_row_count = 4; // TODO depends on keymap.
 
@@ -13,6 +17,49 @@ static float screen_end_y = 1.0f;
 static float current_y = 0.5f;
 
 static int current_zoom_level = 0;
+
+#ifdef CONSOLE_ENABLE
+static bool printConfig(uint16_t keycode) {
+    if (keycode == MCKC_INFO) {
+        print("Mouse man. info:\n");
+        uint16_t x_int = current_x;
+        uint16_t x_dec = (uint8_t)(current_x * 100) % 100;
+        uint16_t y_int = current_y;
+        uint16_t y_dec = (uint8_t)(current_y * 100) % 100;
+        uprintf("Current X,Y: (%u.%02u, %u.%02u)\n", x_int, x_dec, y_int, y_dec);
+        x_int = screen_init_x;
+        x_dec = (uint8_t)(screen_init_x * 100) % 100;
+        y_int = screen_init_y;
+        y_dec = (uint8_t)(screen_init_y * 100) % 100;
+        uprintf("Screen X,Y: (%u.%02u, %u.%02u), ", x_int, x_dec, y_int, y_dec);
+        x_int = screen_end_x;
+        x_dec = (uint8_t)(screen_end_x * 100) % 100;
+        y_int = screen_end_y;
+        y_dec = (uint8_t)(screen_end_y * 100) % 100;
+        uprintf("(%u.%02u, %u.%02u)\n", x_int, x_dec, y_int, y_dec);
+        return true;
+    }
+    return false;
+}
+#endif
+
+static bool setSWcorner(uint16_t keycode) {
+    if (keycode == MCKC_NW) {
+        screen_init_x = current_x;
+        screen_init_y = current_y;
+        return true;
+    }
+    return false;
+}
+
+static bool setNEcorner(uint16_t keycode) {
+    if (keycode == MCKC_SE) {
+        screen_end_x = current_x;
+        screen_end_y = current_y;
+        return true;
+    }
+    return false;
+}
 
 /// slot: starts in 1.
 /// init_pos: must be less than end_pos.
@@ -165,34 +212,47 @@ static bool updateXposition(uint16_t keycode, float *x_pos, int zoom_level) {
 }
 
 bool process_record_user_mouse_manipulation(uint16_t keycode, keyrecord_t *record) {
-    bool ismousekeypressed = false;
-
-    float x = current_x;
-    float y = current_y;
-
-    uint8_t mod_state = get_mods();
-    if (mod_state & MOD_MASK_SHIFT) {
-        current_zoom_level = 1;
-    } else {
-        current_zoom_level = 0;
-    }
-
-    ismousekeypressed = updateXposition(keycode, &x, current_zoom_level);
-    if (!ismousekeypressed) {
-        return true; // Process all other keycodes normally
-    }
-    ismousekeypressed = updateYposition(keycode, &y, current_zoom_level);
-    if (!ismousekeypressed) {
-        return true; // Process all other keycodes normally
-    }
-
-    current_x = x;
-    current_y = y;
-
     if (record->event.pressed) {
+#ifdef CONSOLE_ENABLE
+        if (printConfig(keycode)) {
+           return false; // Skip all further processing of this key
+        }
+#endif
+        if (setSWcorner(keycode)) {
+           return false; // Skip all further processing of this key
+        }
+        if (setNEcorner(keycode)) {
+           return false; // Skip all further processing of this key
+        }
+
+        uint8_t mod_state = get_mods();
+        if (mod_state & MOD_MASK_SHIFT) {
+            current_zoom_level = 1;
+        } else {
+            current_zoom_level = 0;
+        }
+
+        float x = current_x;
+        float y = current_y;
+
+        bool ismousekeypressed = false;
+        ismousekeypressed = updateXposition(keycode, &x, current_zoom_level);
+        if (!ismousekeypressed) {
+            return true; // Process all other keycodes normally
+        }
+        ismousekeypressed = updateYposition(keycode, &y, current_zoom_level);
+        if (!ismousekeypressed) {
+            return true; // Process all other keycodes normally
+        }
+
+        current_x = x;
+        current_y = y;
+
         digitizer_in_range_on();
-        digitizer_set_position(current_x, current_y);
+        digitizer_set_position(current_x, (1 - current_y));
+
+        return false; // Skip all further processing of this key
     }
 
-    return false; // Skip all further processing of this key
+    return true; // Process all other keycodes normally
 }
