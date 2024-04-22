@@ -6,10 +6,12 @@
 #include "print.h"
 #endif
 
+// #define CENTER_IN_SLOT 1 // uncomment to center position in between slots.
+
 const int max_col_count = 10; // TODO depends on keymap.
 const int max_row_count = 4; // TODO depends on keymap.
 
-static float screen_init_x = 0.0f; // TODO user setup
+static float screen_init_x = 0.0f;
 static float screen_end_x = 1.0f;
 static float current_x = 0.5f;
 static float screen_init_y = 0.0f;
@@ -70,9 +72,11 @@ static float getPosition(int slot, float init_pos, float end_pos, int slotCount)
     float slot_size = (end_pos - init_pos) / slotCount;
     pos += (slot_size * (slot - 1));
 
+#ifdef CENTER_IN_SLOT
     // center in between current and next slots.
     float center_offset = slot_size / 2;
     pos += center_offset;
+#endif
 
     return pos;
 }
@@ -100,7 +104,11 @@ static bool updateYposition(uint16_t keycode, float *y_pos, int zoom_level) {
         if (zoom_level > 0) {
             float line_height = (screen_end_y - screen_init_y) / max_row_count;
             line_height /= (zoom_level + 1);
+#ifdef CENTER_IN_SLOT
             float center_offset = line_height / 2;
+#else
+            float center_offset = 0;
+#endif
             init_y = *y_pos - center_offset; // new bottom position
             end_y = *y_pos + center_offset; // new top position
         }
@@ -201,7 +209,11 @@ static bool updateXposition(uint16_t keycode, float *x_pos, int zoom_level) {
         if (zoom_level > 0) {
             float col_width = (screen_end_x - screen_init_x) / max_col_count;
             col_width /= (zoom_level + 1);
+#ifdef CENTER_IN_SLOT
             float center_offset = col_width / 2;
+#else
+            float center_offset = 0;
+#endif
             init_x = *x_pos - center_offset; // new left position
             end_x = *x_pos + center_offset; // new right position
         }
