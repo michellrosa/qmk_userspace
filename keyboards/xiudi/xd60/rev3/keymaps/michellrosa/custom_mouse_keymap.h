@@ -9,7 +9,7 @@
 
 // clang-format off
 
-#define MOUSE_LAYER                                                                                                                                                   \
+#define LAYOUT_mouse_layer()                                                                                                                                          \
     LAYOUT_faker(                                                                                                                                                     \
         KC_EXMM, MCKC_R4K1, MCKC_R4K2, MCKC_R4K3, MCKC_R4K4, MCKC_R4K5, MCKC_R4K6, MCKC_R4K7, MCKC_R4K8, MCKC_R4K9, MCKC_R4K10, _______, _______, _______, _______,   \
         _______, MCKC_R3K1, MCKC_R3K2, MCKC_R3K3, MCKC_R3K4, MCKC_R3K5, MCKC_R3K6, MCKC_R3K7, MCKC_R3K8, MCKC_R3K9, MCKC_R3K10, _______, _______,          _______,   \

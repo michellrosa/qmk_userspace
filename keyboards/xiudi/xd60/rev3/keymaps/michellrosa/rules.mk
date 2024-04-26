@@ -7,3 +7,5 @@ BACKLIGHT_ENABLE = no
 SRC += mouse_manipulation.c
 
 CONSOLE_ENABLE = yes
+
+#REPEAT_KEY_ENABLE = yes

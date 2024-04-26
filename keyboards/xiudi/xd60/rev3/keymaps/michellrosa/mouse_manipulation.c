@@ -6,7 +6,7 @@
 #include "print.h"
 #endif
 
-// #define CENTER_IN_SLOT 1 // uncomment to center position in between slots.
+// #define CENTER_IN_SLOT // uncomment to center position in between slots.
 
 const int max_col_count = 10; // TODO depends on keymap.
 const int max_row_count = 4; // TODO depends on keymap.
@@ -46,7 +46,7 @@ static bool printConfig(uint16_t keycode) {
 #endif
 
 static bool setSWcorner(uint16_t keycode) {
-    if (keycode == MCKC_NW) {
+    if (keycode == MCKC_SW) {
         screen_init_x = current_x;
         screen_init_y = current_y;
         return true;
@@ -55,7 +55,7 @@ static bool setSWcorner(uint16_t keycode) {
 }
 
 static bool setNEcorner(uint16_t keycode) {
-    if (keycode == MCKC_SE) {
+    if (keycode == MCKC_NE) {
         screen_end_x = current_x;
         screen_end_y = current_y;
         return true;
@@ -268,3 +268,6 @@ bool process_record_user_mouse_manipulation(uint16_t keycode, keyrecord_t *recor
 
     return true; // Process all other keycodes normally
 }
+
+
+//https://github.com/qmk/qmk_firmware/blob/master/docs/feature_pointing_device.md#automatic-mouse-layer-idpointing-device-auto-mouse
