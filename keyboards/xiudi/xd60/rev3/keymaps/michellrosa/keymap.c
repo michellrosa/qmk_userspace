@@ -7,7 +7,7 @@
 #include "keymap_brazilian_abnt2.h"
 
 // Shift on Hold, Enter on Tap
-#define FK_SENT SFT_T(KC_ENT) // SC_SENT
+#define FK_SENT SC_SENT // SFT_T(KC_ENT)
 
 enum keyboard_layers {
   _USL = 0, // Base Layer Ansii
@@ -17,6 +17,16 @@ enum keyboard_layers {
 };
 
 #define _BL _USL
+
+#define FK_BR_QUOT _______ // TODO '"
+#define FK_BR_6    _______ // TODO 6¨
+#define FK_BR_ACUT _______ // TODO ´`
+#define FK_BR_LBRC KC_RBRC // [{
+#define FK_BR_RBRC KC_BSLS // ]}
+#define FK_BR_CCED _______ // TODO çÇ
+#define FK_BR_TILD _______ // TODO ~^
+#define FK_BR_BSLS KC_BSLS // \|
+#define FK_BR_SCLN KC_SLSH // ;:
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if 0
@@ -37,10 +47,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 #endif
     [_BRL] = LAYOUT_60_ansi_split_bs_rshift_space(
-        _______, BR_1,    BR_2,    BR_3,    BR_4,    BR_5,    BR_6,    BR_7,    BR_8,    BR_9,    BR_0,    BR_MINS, BR_EQL,  _______, _______,
-        _______, BR_Q,    BR_W,    BR_E,    BR_R,    BR_T,    BR_Y,    BR_U,    BR_I,    BR_O,    BR_P,    BR_ACUT, BR_LBRC,          BR_BSLS,
-        _______, BR_A,    BR_S,    BR_D,    BR_F,    BR_G,    BR_H,    BR_J,    BR_K,    BR_L,    BR_CCED, BR_TILD, BR_RBRC,          _______,
-        _______, _______, BR_Z,    BR_X,    BR_C,    BR_V,    BR_B,    BR_N,    BR_M,    BR_COMM, BR_DOT,  BR_SCLN, _______, _______, _______,
+        KC_ESC,  _______, _______, _______, _______, _______, BR_6,    _______, _______, _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, BR_ACUT, BR_LBRC,          _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, BR_CCED, BR_TILD, BR_RBRC,          _______,
+        _______, FK_SENT, _______, _______, _______, _______, _______, _______, _______, _______, _______, BR_SCLN, _______, _______, _______,
         _______, _______, _______,        _______,                   _______,            _______, _______, _______, _______, _______, _______
     ),
     [_FL] = LAYOUT_faker(
