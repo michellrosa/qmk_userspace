@@ -4,7 +4,8 @@
 #include "custom_mouse_keymap.h"
 #include "faker_layout.h"
 #include "mouse_manipulation.h"
-// #include "keymap_brazilian_abnt2.h"
+#include "abnt2_keycodes.h"
+#include "abnt2.h"
 
 enum keyboard_layers {
   _USL = 0, // Base Layer Ansii
@@ -14,14 +15,6 @@ enum keyboard_layers {
 };
 
 #define _BL _USL
-
-const custom_shift_key_t custom_shift_keys[] = {
-    {FKBR_6, FKBR_6_S},             // Shift 6 is ¨
-    {FKBR_ACUT, FKBR_ACUT_S},       // Shift ´ is `
-    //{FKBR_CCED, FKBR_CCED_S},     // Shift ç is Ç
-    {FKBR_TILD, FKBR_TILD_S},       // Shift ~ is ^
-};
-uint8_t NUM_CUSTOM_SHIFT_KEYS = sizeof(custom_shift_keys) / sizeof(custom_shift_key_t);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #if 0
@@ -79,19 +72,12 @@ void keyboard_post_init_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (layer_state_is(_ML)) { // Restrict processing for layer _ML active.
-        return process_record_user_mouse_manipulation(keycode, record);
-    }
-    if (!process_custom_shift_keys(keycode, record)) { return false; }
-
-    switch (keycode) {
-    case FKBR_6:
-        if (record->event.pressed) {
-            register_code(KC_6);
-        } else {
-            unregister_code(KC_6);
+        if (!process_record_user_mouse_manipulation(keycode, record)) {
+            return false;
         }
-        // return false;
-        break;
+    }
+    if (!abnt2_process_record_user(keycode, record)) {
+        return false;
     }
 
     return true; // Process keycodes normally
